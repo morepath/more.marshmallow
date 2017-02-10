@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields
 from webtest import TestApp as Client
 
-from more.marshmallow import loader, App as MarshmallowApp
+from more.marshmallow import loader, MarshmallowApp
 
 
 def test_marshmallow():
