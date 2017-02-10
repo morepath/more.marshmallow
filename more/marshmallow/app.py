@@ -1,12 +1,12 @@
 import morepath
-from .error import ValidationError
+from .error import Error
 
 
 class App(morepath.App):
     pass
 
 
-@App.json(model=ValidationError)
+@App.json(model=Error)
 def validation_error_default(self, request):
     @request.after
     def adjust_status(response):

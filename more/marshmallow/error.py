@@ -1,4 +1,4 @@
-class ValidationError(Exception):
+class Error(Exception):
     def __init__(self, errors):
-        super(ValidationError, self).__init__("Marshmallow validation error")
+        super(Error, self).__init__("Marshmallow validation error")
         self.errors = errors

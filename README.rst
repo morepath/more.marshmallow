@@ -4,7 +4,7 @@ more.marshmallow: (de)serialization support for Morepath
 This package provides Morepath integration for the Marshmallow_ object
 serialization library:
 
-.. _Marshmallow: http://marshmallow.readthedocs.io
+.. _Marshmallow: https://marshmallow.readthedocs.io
 
 Marshmallow can automate user input validation and conversion in a HTTP API. It
 also provides serialization support. This lets you automatically translate
@@ -77,20 +77,50 @@ We can use this loader to handle a PUT request for instance:
       # PUT onto this view that you can use to update
       # self
 
+Deserialize with Context
+------------------------
+
+Your deserialization and validation logic may be dependent on application
+context, such as the request. You can use ``request_loader`` to construct a
+``load`` function that makes sure there is a ``request`` entry in the
+``context`` attribute on Marshmallow schemas. Note that you need to pass the
+schema *class* into this function, not a schema instance:
+
+.. code-block:: python
+
+  from more.marshmallow import request_loader
+
+  my_schema_load = request_loader(MySchema)
+
+You can also control context construction manually with ``context_loader``:
+
+.. code-block:: python
+
+  from more.marshmallow import context_loader
+
+  def get_context(request):
+     return {
+         "whatever": "you want",
+     }
+  my_schema_load = context_loader(MySchema, get_context)
+
+``context_loader`` gets a request instance as the argument so you can use it to
+access information.
+
 Error handling
 --------------
 
 If deserialization fails due to a deserialization error (a required field is
 missing, or a field is of the wrong datatype, for instance), you want to show
 some kind of error message. The ``load`` functions created by
-``more.marshmallow.loader`` raise the ``more.marshmallow.ValidationError``
+``more.marshmallow`` raise the ``more.marshmallow.Error``
 exception. This exception object has an ``errors`` attribute with the validation
 errors. You must define an exception view for it, otherwise validation
 errors are returned as "500 internal server error" to API users.
 
 This package provides a default exception view implementation. If you subclass
 your application from ``more.marshmallow.MarshmallowApp`` then you get a default
-error view for ``ValidationError`` that has a 422 status code with a JSON
+error view for ``Error`` that has a 422 status code with a JSON
 response with the marshmallow errors structure:
 
 
