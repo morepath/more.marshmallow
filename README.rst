@@ -120,15 +120,17 @@ Error handling
 If deserialization fails due to a deserialization error (a required field is
 missing, or a field is of the wrong datatype, for instance), you want to show
 some kind of error message. The ``load`` functions created by
-``more.marshmallow`` raise the ``more.marshmallow.Error``
-exception. This exception object has an ``errors`` attribute with the validation
-errors. You must define an exception view for it, otherwise validation
-errors are returned as "500 internal server error" to API users.
+``more.marshmallow`` raise the ``more.marshmallow.Error`` exception in case of
+errors.
+
+This exception object has an ``errors`` attribute with the validation errors.
+You must define an exception view for it, otherwise validation errors are
+returned as "500 internal server error" to API users.
 
 This package provides a default exception view implementation. If you subclass
 your application from ``more.marshmallow.MarshmallowApp`` then you get a default
-error view for ``Error`` that has a 422 status code with a JSON
-response with the marshmallow errors structure:
+error view for ``Error`` that has a 422 status code with a JSON response with
+the marshmallow errors structure:
 
 
 .. code-block:: python
