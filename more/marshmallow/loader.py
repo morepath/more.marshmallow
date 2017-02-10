@@ -1,4 +1,5 @@
 from functools import partial
+from marshmallow import Schema
 from .error import Error
 
 
@@ -12,7 +13,8 @@ def load(schema, request):
 def loader(schema):
     """Create a load function based on schema instance.
 
-    :param schema: a Marshmallow schema instance.
+    :param schema: a Marshmallow schema instance. You
+      can also pass in a Marshmallow schema class.
 
     You can plug this ``load`` function into a json view.
 
@@ -21,6 +23,9 @@ def loader(schema):
     :class:`more.marshmallow.ValidationError` if it cannot do
     the deserialization.
     """
+    if not isinstance(schema, Schema):
+        # try to instantiate the schema class
+        schema = schema()
     return partial(load, schema)
 
 

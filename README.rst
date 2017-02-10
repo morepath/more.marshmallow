@@ -67,6 +67,13 @@ we must create a loader for our schema:
 
   my_schema_load = loader(my_schema)
 
+Alternatively you can pass in the Marshmallow schema class to control the
+loader; the loader automatically instantiates it:
+
+.. _code-block:: python
+
+  my_schema_load = loader(MySchema)
+
 We can use this loader to handle a PUT request for instance:
 
 .. code-block:: python

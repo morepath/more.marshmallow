@@ -55,6 +55,43 @@ def test_marshmallow():
     assert r.json == {'email': ['Missing data for required field.']}
 
 
+def test_marshmallow_schema_class():
+    class User(object):
+        def __init__(self, name, email):
+            self.name = name
+            self.email = email
+
+    class UserSchema(Schema):
+        name = fields.Str(required=True)
+        email = fields.Email(required=True)
+
+    class App(MarshmallowApp):
+        pass
+
+    user = User('Somebody', 'somebody@example.com')
+
+    @App.path(model=User, path='/')
+    def get_user():
+        return user
+
+    @App.json(model=User, request_method='PUT',
+              load=loader(UserSchema))
+    def user_put(self, request, obj):
+        for key, value in obj.items():
+            setattr(self, key, value)
+        return "done"
+
+    c = Client(App())
+
+    r = c.put_json('/', {'name': "Somebody else",
+                         "email": "somebody.else@example.com"})
+    assert user.name == 'Somebody else'
+    assert user.email == 'somebody.else@example.com'
+
+    r = c.put_json('/', {'name': 'Another'}, status=422)
+    assert r.json == {'email': ['Missing data for required field.']}
+
+
 def test_marshmallow_context_loader():
     class User(object):
         def __init__(self, name, email):
